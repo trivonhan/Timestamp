@@ -4,6 +4,7 @@
 // init project
 var express = require('express');
 var app = express();
+var moment = require('moment');
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
@@ -29,38 +30,45 @@ app.get('/api/timestamp', function(req,res){
 });
 
 app.get('/api/timestamp/:date_string?', function(req,res){
-	var dateString = req.params.date_string;
-	var regex = /(-)/;
-    if (new Date(dateString).toString() === "Invalid Date") {
-		//res.json({unix : Date.now(), utc : Date()});
-		res.json({unix: "null",utc : "Invalid Date"});
-	 }
-	else{
-		let checkDate = regex.test(dateString);
-		console.log(checkDate);
-		if (checkDate === true){
-			let dateInt = Date.parse(dateString);
-			res.json({unix : dateInt, utc : new Date(dateString).toUTCString()});
+	// var dateString = req.params.date_string;
+	// let dateNum = parseInt(dateString);
+	// var regex = /(-)/;
+	// console.log(new Date(dateNum).toString());
+    // if (new Date(dateNum).toString() === 'Invalid Date') {
+	// 	//res.json({unix : Date.now(), utc : Date()});
+	// 	res.json({unix: "null",utc : "Invalid Date"});
+	//  }
+	// else{
+	// 	let checkDate = regex.test(dateString);
+	// 	console.log(checkDate);
+	// 	if (checkDate === true){
+	// 		let dateInt = Date.parse(dateString);
+	// 		res.json({unix : dateInt, utc : new Date(dateString).toUTCString()});
+	// 	}
+	// 	else{
+	// 		let dateObj = new Date(dateString * 1000); 
+	// 		let utcString = dateObj.toUTCString(); 
+	// 		console.log(utcString);
+	// 		let time = utcString.slice(-11, -4); 
+	// 		console.log(time);
+	// 		res.json({unix : dateString, utc : time});
+	// 	}
+	// }
+	let dateString = req.params.date_string;
+	if (/\d{5,}/.test(dateString)) {
+		let dateInt = parseInt(dateString);
+		console.log(new Date(dateInt).toUTCString());
+		res.json({ unix: dateString, utc: new Date(dateInt).toUTCString() });
+	}
+	else {
+		let dateObj = new Date(dateString);
+		if (dateObj === "Invalid Date"){
+			res.json({unix: "null", utc : "Invalid Date"});
 		}
 		else{
-			let dateInt = parseInt(dateString);
-			let dateObj = new Date(dateString * 1000); 
-            let utcString = dateObj.toUTCString(); 
-			res.json({unix : dateString, utc : utcString});
+			res.json({unix : dateObj.valueOf(), utc: dateObj.toUTCString()});
 		}
 	}
-
-
-	// if (/\d{5,}/.test(dateString)) {
-	// 	dateInt = parseInt(dateString);
-	// 	res.json({ unix: dateString, utc: new Date(dateInt).toUTCString() });
-	// }
-	// let dateObject = new Date(dateString);
-	// if (dateObject.toString() === "Invalid Date") {
-	// 	res.json({ error: "Invaid Date" });
-	//   } else {
-	// 	res.json({ unix: dateObject.valueOf(), utc: dateObject.toUTCString() });
-	//   }
 });
 
 // listen for requests :)
