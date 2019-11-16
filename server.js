@@ -33,7 +33,7 @@ app.get('/api/timestamp/:date_string?', function(req,res){
 	var regex = /(-)/;
     if (new Date(dateString).toString() === "Invalid Date") {
 		//res.json({unix : Date.now(), utc : Date()});
-		res.json({error : "Invalid Date"});
+		res.json({unix: "null",utc : "Invalid Date"});
 	 }
 	else{
 		let checkDate = regex.test(dateString);
